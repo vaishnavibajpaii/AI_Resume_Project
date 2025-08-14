@@ -15,5 +15,8 @@ namespace ResumeFilterProject.Models
         public string ParsedText { get; set; }
 
         public DateTime UploadedAt { get; set; } = DateTime.Now;
+
+        
+        public string? Labels { get; set; }
     }
 }
