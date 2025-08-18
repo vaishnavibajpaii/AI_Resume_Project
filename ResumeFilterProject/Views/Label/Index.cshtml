@@ -1,57 +1,48 @@
-﻿@model IEnumerable<ResumeFilterProject.Models.ResumeUpload>
-@{
-    ViewData["Title"] = "Label Resumes";
-}
+﻿@model List<ResumeFilterProject.Models.ResumeLabel>
 
 <h2>Label Resumes</h2>
 
-<form method="get" class="mb-3">
-    <input type="text" name="q" value="@Context.Request.Query["q"]" placeholder="Search filename/text/labels" class="form-control" />
-    <div class="form-check mt-2">
-        <input class="form-check-input" type="checkbox" name="onlyUnlabeled" value="true"
-        @(Context.Request.Query["onlyUnlabeled"] == "true" ? "checked" : "") id="onlyUnlabeled" />
-        <label for="onlyUnlabeled" class="form-check-label">Show only unlabeled</label>
+@* This section will display the success message after saving *@
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
     </div>
-    <button class="btn btn-secondary mt-2">Filter</button>
-    <a asp-action="Index" class="btn btn-link">Reset</a>
-</form>
+}
 
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>File</th>
-            <th>Preview</th>
-            <th>Labels</th>
-            <th>Uploaded</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var r in Model)
-        {
+@* The form now points to the DataCleaning controller *@
+<form asp-action="Review" asp-controller="DataCleaning" method="post">
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    <div>@r.FileName</div>
-                    @if (!string.IsNullOrEmpty(r.FilePath))
-                    {
-                        <a href="@r.FilePath" target="_blank">view file</a>
-                    }
-                </td>
-                <td>
-                    @{
-                        var t = r.ParsedText ?? "";
-                        var preview = t.Length > 200 ? t.Substring(0, 200) + "..." : t;
-                    }
-                    <div style="max-width: 520px; white-space: pre-wrap;">@preview</div>
-                </td>
-                <td>
-                    <span>@r.Labels</span>
-                </td>
-                <td>@r.UploadedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-primary btn-sm">Label</a>
-                </td>
+                <th>File Name</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Skills</th>
+                <th>Experience</th>
+                <th>Education</th>
+                <th>Projects</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Model[i].FileName
+                        <input type="hidden" asp-for="@Model[i].Id" />
+                        <input type="hidden" asp-for="@Model[i].FileName" />
+                    </td>
+                    <td><input asp-for="@Model[i].Name" class="form-control" /></td>
+                    <td><input asp-for="@Model[i].Contact" class="form-control" /></td>
+                    <td><input asp-for="@Model[i].Skills" class="form-control" /></td>
+                    <td><input asp-for="@Model[i].Experience" class="form-control" /></td>
+                    <td><input asp-for="@Model[i].Education" class="form-control" /></td>
+                    <td><input asp-for="@Model[i].Projects" class="form-control" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @* The button text is updated for clarity *@
+    <button type="submit" class="btn btn-primary">Clean and Review Labels</button>
+</form>

@@ -1,89 +1,88 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ResumeFilterProject.Data;
 using ResumeFilterProject.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ResumeFilterProject.Controllers
 {
     public class LabelController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _context;
 
-        public LabelController(ApplicationDbContext db)
+        public LabelController(ApplicationDbContext context)
         {
-            _db = db;
+            _context = context;
         }
 
-        // ✅ List all resumes for labeling (with quick preview)
-        [HttpGet]
-        public async Task<IActionResult> Index(string q = null, bool onlyUnlabeled = false)
+        // ✅ FIX: Load ALL resumes and join them with any existing labels.
+        public IActionResult Index()
         {
-            IQueryable<ResumeUpload> query = _db.Resumes.AsNoTracking().OrderByDescending(r => r.UploadedAt);
+            // Get all the main resumes first (assuming you have a 'Resumes' table/DbSet)
+            var allResumes = _context.Resumes.ToList();
+            var existingLabels = _context.ResumeLabels.ToDictionary(l => l.Id);
 
-            if (!string.IsNullOrWhiteSpace(q))
+            var model = allResumes.Select(r =>
             {
-                var term = q.Trim().ToLower();
-                query = query.Where(r =>
-                    r.FileName.ToLower().Contains(term) ||
-                    (r.ParsedText != null && r.ParsedText.ToLower().Contains(term)) ||
-                    (r.Labels != null && r.Labels.ToLower().Contains(term))
-                );
-            }
+                // If a label already exists for this resume, use it.
+                if (existingLabels.TryGetValue(r.Id, out var label))
+                {
+                    return label;
+                }
 
-            if (onlyUnlabeled)
-            {
-                query = query.Where(r => string.IsNullOrEmpty(r.Labels));
-            }
+                // Otherwise, create a NEW, empty label object for the view.
+                return new ResumeLabel { Id = r.Id, FileName = r.FileName };
 
-            var list = await query.ToListAsync();
-            return View(list);
+            }).ToList();
+
+            return View(model);
         }
 
-        // ✅ Open one resume for labeling
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var r = await _db.Resumes.FindAsync(id);
-            if (r == null) return NotFound();
-
-            var vm = new ResumeLabelViewModel
-            {
-                Id = r.Id,
-                FileName = r.FileName,
-                FilePath = r.FilePath,
-                ParsedText = r.ParsedText,
-                Labels = r.Labels
-            };
-            return View(vm);
-        }
-
-        // ✅ Save labels
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ResumeLabelViewModel vm)
+        public IActionResult SaveLabels(List<ResumeLabel> model)
         {
-            if (!ModelState.IsValid) return View(vm);
+            foreach (var item in model)
+            {
+                // 🛑 PROBLEM WAS HERE: This only looked for existing resumes.
+                var resumeInDb = _context.ResumeLabels.FirstOrDefault(r => r.Id == item.Id);
 
-            var r = await _db.Resumes.FindAsync(vm.Id);
-            if (r == null) return NotFound();
-
-            // normalize labels: trim spaces around commas
-            r.Labels = NormalizeLabels(vm.Labels);
-            await _db.SaveChangesAsync();
-
-            TempData["msg"] = "Labels saved.";
-            return RedirectToAction(nameof(Index));
+                // ✅ FIX: If resume label exists, UPDATE it.
+                if (resumeInDb != null)
+                {
+                    resumeInDb.Name = item.Name;
+                    resumeInDb.Contact = item.Contact;
+                    resumeInDb.Skills = item.Skills;
+                    resumeInDb.Experience = item.Experience;
+                    resumeInDb.Education = item.Education;
+                    resumeInDb.Projects = item.Projects;
+                    _context.Update(resumeInDb);
+                }
+                // ✅ FIX: If resume label does NOT exist, CREATE it.
+                else
+                {
+                    // We only add if there is some data to save
+                    if (!string.IsNullOrWhiteSpace(item.Name) || !string.IsNullOrWhiteSpace(item.Skills))
+                    {
+                        var newLabel = new ResumeLabel
+                        {
+                            //Id = item.Id,
+                            FileName = item.FileName, // Make sure FileName is passed from the form
+                            Name = item.Name,
+                            Contact = item.Contact,
+                            Skills = item.Skills,
+                            Experience = item.Experience,
+                            Education = item.Education,
+                            Projects = item.Projects
+                        };
+                        _context.Add(newLabel);
+                    }
+                }
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
-        private static string NormalizeLabels(string labels)
-        {
-            if (string.IsNullOrWhiteSpace(labels)) return null;
-            var parts = labels
-                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(s => s.Replace("  ", " ").Trim())
-                .Where(s => !string.IsNullOrWhiteSpace(s))
-                .Distinct(StringComparer.OrdinalIgnoreCase);
-            return string.Join(", ", parts);
-        }
+        // Your Edit actions are likely fine, but the logic above is the main fix.
+        // ... (keep your existing Edit GET and POST methods here)
     }
 }

@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResumeFilterProject", "ResumeFilterProject\ResumeFilterProject.csproj", "{7D2D3F96-F214-4D2B-AB3A-CC5D7B3EFC8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabelStudioIntegration", "LabelStudioIntegration\LabelStudioIntegration.csproj", "{B2EED38E-AB30-42EF-8932-D3C4B8BF403F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{7D2D3F96-F214-4D2B-AB3A-CC5D7B3EFC8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D2D3F96-F214-4D2B-AB3A-CC5D7B3EFC8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D2D3F96-F214-4D2B-AB3A-CC5D7B3EFC8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2EED38E-AB30-42EF-8932-D3C4B8BF403F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2EED38E-AB30-42EF-8932-D3C4B8BF403F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2EED38E-AB30-42EF-8932-D3C4B8BF403F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2EED38E-AB30-42EF-8932-D3C4B8BF403F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

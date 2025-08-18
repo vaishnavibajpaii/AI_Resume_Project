@@ -1,0 +1,42 @@
+﻿@model List<ResumeFilterProject.Models.ResumeLabel>
+
+<h2>Review Cleaned Data</h2>
+<p>The labeled data has been cleaned and standardized. Please review the changes below before saving to the database.</p>
+
+<form asp-action="SaveChanges" asp-controller="DataCleaning" method="post">
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>File Name</th>
+                <th>Name</th>
+                <th>Contact (Digits Only)</th>
+                <th>Skills (Lowercase)</th>
+                <th>Education (Standardized)</th>
+                <th>Experience</th>
+                <th>Projects</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Model[i].FileName
+                        <input type="hidden" asp-for="@Model[i].Id" />
+                        <input type="hidden" asp-for="@Model[i].FileName" />
+                    </td>
+                    <td><input asp-for="@Model[i].Name" class="form-control" readonly /></td>
+                    <td><input asp-for="@Model[i].Contact" class="form-control" readonly /></td>
+                    <td><input asp-for="@Model[i].Skills" class="form-control" readonly /></td>
+                    <td><input asp-for="@Model[i].Education" class="form-control" readonly /></td>
+                    <td><input asp-for="@Model[i].Experience" class="form-control" readonly /></td>
+                    <td><input asp-for="@Model[i].Projects" class="form-control" readonly /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success">Confirm & Save to Database</button>
+        <a asp-action="Index" asp-controller="Label" class="btn btn-secondary">Cancel and Return</a>
+    </div>
+</form>

@@ -1,49 +1,34 @@
-﻿@model ResumeFilterProject.Models.ResumeLabelViewModel
-@{
-    ViewData["Title"] = "Label: " + Model.FileName;
-}
+﻿@model ResumeFilterProject.Models.ResumeLabel
 
-<h2>@ViewData["Title"]</h2>
+<h2>Label Resume</h2>
 
-@if (TempData["msg"] != null)
-{
-    <div class="alert alert-success">@TempData["msg"]</div>
-}
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
 
-<div class="row">
-    <div class="col-md-6">
-        <h5>Extracted Text (context)</h5>
-        <div style="white-space:pre-wrap; background:#f8f9fa; border:1px solid #ddd; padding:10px; max-height:60vh; overflow:auto;">
-            @Model.ParsedText
-        </div>
+    <div>
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" />
     </div>
-    <div class="col-md-6">
-        <form asp-action="Edit" method="post">
-            <input type="hidden" asp-for="Id" />
-            <div class="mb-2">
-                <label class="form-label">File</label>
-                <div>@Model.FileName</div>
-                @if (!string.IsNullOrEmpty(Model.FilePath))
-                {
-                    <a href="@Model.FilePath" target="_blank">open file</a>
-                }
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Labels" class="form-label"></label>
-                <input asp-for="Labels" class="form-control" placeholder="e.g. Java, Spring Boot, AWS" />
-                <span asp-validation-for="Labels" class="text-danger"></span>
-                <small class="text-muted">
-                    Tip: comma-separated tags. Common: Java, Spring Boot, AWS, .NET, ASP.NET Core, React, Angular, Docker, Kubernetes, SQL, NoSQL, Microservices, REST, Node.js, Python, Django
-                </small>
-            </div>
-
-            <button type="submit" class="btn btn-success">Save Labels</button>
-            <a asp-action="Index" class="btn btn-link">Back</a>
-        </form>
+    <div>
+        <label>Contact</label>
+        <input asp-for="Contact" class="form-control" />
     </div>
-</div>
+    <div>
+        <label>Skills</label>
+        <textarea asp-for="Skills" class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Experience</label>
+        <textarea asp-for="Experience" class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Education</label>
+        <textarea asp-for="Education" class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Projects</label>
+        <textarea asp-for="Projects" class="form-control"></textarea>
+    </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    <button type="submit" class="btn btn-primary">Save Labels</button>
+</form>
