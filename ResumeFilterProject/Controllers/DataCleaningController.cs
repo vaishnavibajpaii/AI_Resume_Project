@@ -47,25 +47,30 @@ namespace ResumeFilterProject.Controllers
         {
             foreach (var cleanedItem in model)
             {
-                var resumeInDb = _context.ResumeLabels.FirstOrDefault(r => r.Id == cleanedItem.Id);
-
-                if (resumeInDb != null)
+                if (cleanedItem.Id == 0)
                 {
-                    // Update existing entity
-                    resumeInDb.Name = cleanedItem.Name;
-                    resumeInDb.Contact = cleanedItem.Contact;
-                    resumeInDb.Skills = cleanedItem.Skills;
-                    resumeInDb.Experience = cleanedItem.Experience;
-                    resumeInDb.Education = cleanedItem.Education;
-                    resumeInDb.Projects = cleanedItem.Projects;
-                    _context.Update(resumeInDb);
+                    // New record → let DB generate Id
+                    _context.ResumeLabels.Add(cleanedItem);
                 }
                 else
                 {
-                    // Create new entity
-                    _context.Add(cleanedItem);
+                    // Existing record → update
+                    var resumeInDb = _context.ResumeLabels.FirstOrDefault(r => r.Id == cleanedItem.Id);
+
+                    if (resumeInDb != null)
+                    {
+                        resumeInDb.Name = cleanedItem.Name;
+                        resumeInDb.Contact = cleanedItem.Contact;
+                        resumeInDb.Skills = cleanedItem.Skills;
+                        resumeInDb.Experience = cleanedItem.Experience;
+                        resumeInDb.Education = cleanedItem.Education;
+                        resumeInDb.Projects = cleanedItem.Projects;
+
+                        _context.ResumeLabels.Update(resumeInDb);
+                    }
                 }
             }
+
             _context.SaveChanges();
 
             // Add a success message to show the user

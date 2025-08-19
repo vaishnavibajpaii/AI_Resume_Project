@@ -22,15 +22,15 @@
                 <tr>
                     <td>
                         @Model[i].FileName
-                        <input type="hidden" asp-for="@Model[i].Id" />
-                        <input type="hidden" asp-for="@Model[i].FileName" />
+                        <input type="hidden" name="[@i].Id" value="@Model[i].Id" />
+                        <input type="hidden" name="[@i].FileName" value="@Model[i].FileName" />
                     </td>
-                    <td><input asp-for="@Model[i].Name" class="form-control" readonly /></td>
-                    <td><input asp-for="@Model[i].Contact" class="form-control" readonly /></td>
-                    <td><input asp-for="@Model[i].Skills" class="form-control" readonly /></td>
-                    <td><input asp-for="@Model[i].Education" class="form-control" readonly /></td>
-                    <td><input asp-for="@Model[i].Experience" class="form-control" readonly /></td>
-                    <td><input asp-for="@Model[i].Projects" class="form-control" readonly /></td>
+                    <td><input name="[@i].Name" value="@Model[i].Name" class="form-control" readonly /></td>
+                    <td><input name="[@i].Contact" value="@Model[i].Contact" class="form-control" readonly /></td>
+                    <td><input name="[@i].Skills" value="@Model[i].Skills" class="form-control" readonly /></td>
+                    <td><input name="[@i].Education" value="@Model[i].Education" class="form-control" readonly /></td>
+                    <td><input name="[@i].Experience" value="@Model[i].Experience" class="form-control" readonly /></td>
+                    <td><input name="[@i].Projects" value="@Model[i].Projects" class="form-control" readonly /></td>
                 </tr>
             }
         </tbody>

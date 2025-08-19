@@ -18,7 +18,7 @@ namespace ResumeFilterProject.Data
             // This tells the database that the application will provide the Id value.
             modelBuilder.Entity<ResumeLabel>()
                 .Property(r => r.Id)
-                .ValueGeneratedNever(); // Changed from ValueGeneratedOnAdd()
+                .ValueGeneratedOnAdd(); // Changed from ValueGeneratedOnAdd()
         }
     }
 }
