@@ -14,11 +14,12 @@ namespace ResumeFilterProject.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ✅ CORRECTED LINE:
-            // This tells the database that the application will provide the Id value.
+            // ✅ THIS IS THE FIX:
+            // This line now correctly tells the database that your application
+            // will provide the Id value, and it should NOT generate one itself.
             modelBuilder.Entity<ResumeLabel>()
                 .Property(r => r.Id)
-                .ValueGeneratedOnAdd(); // Changed from ValueGeneratedOnAdd()
+                .ValueGeneratedNever(); // Changed from .ValueGeneratedOnAdd()
         }
     }
 }

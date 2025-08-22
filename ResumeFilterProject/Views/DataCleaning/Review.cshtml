@@ -9,9 +9,9 @@
             <tr>
                 <th>File Name</th>
                 <th>Name</th>
-                <th>Contact (Digits Only)</th>
-                <th>Skills (Lowercase)</th>
-                <th>Education (Standardized)</th>
+                <th>Contact</th>
+                <th>Skills</th>
+                <th>Education</th>
                 <th>Experience</th>
                 <th>Projects</th>
             </tr>
@@ -22,15 +22,35 @@
                 <tr>
                     <td>
                         @Model[i].FileName
-                        <input type="hidden" name="[@i].Id" value="@Model[i].Id" />
-                        <input type="hidden" name="[@i].FileName" value="@Model[i].FileName" />
+
+                        <input type="hidden" asp-for="@Model[i].Id" />
+                        <input type="hidden" asp-for="@Model[i].FileName" />
                     </td>
-                    <td><input name="[@i].Name" value="@Model[i].Name" class="form-control" readonly /></td>
-                    <td><input name="[@i].Contact" value="@Model[i].Contact" class="form-control" readonly /></td>
-                    <td><input name="[@i].Skills" value="@Model[i].Skills" class="form-control" readonly /></td>
-                    <td><input name="[@i].Education" value="@Model[i].Education" class="form-control" readonly /></td>
-                    <td><input name="[@i].Experience" value="@Model[i].Experience" class="form-control" readonly /></td>
-                    <td><input name="[@i].Projects" value="@Model[i].Projects" class="form-control" readonly /></td>
+                    <td>
+                        @Model[i].Name
+
+                        <input type="hidden" asp-for="@Model[i].Name" />
+                    </td>
+                    <td>
+                        @Model[i].Contact
+                        <input type="hidden" asp-for="@Model[i].Contact" />
+                    </td>
+                    <td>
+                        @Model[i].Skills
+                        <input type="hidden" asp-for="@Model[i].Skills" />
+                    </td>
+                    <td>
+                        @Model[i].Education
+                        <input type="hidden" asp-for="@Model[i].Education" />
+                    </td>
+                    <td>
+                        @Model[i].Experience
+                        <input type="hidden" asp-for="@Model[i].Experience" />
+                    </td>
+                    <td>
+                        @Model[i].Projects
+                        <input type="hidden" asp-for="@Model[i].Projects" />
+                    </td>
                 </tr>
             }
         </tbody>

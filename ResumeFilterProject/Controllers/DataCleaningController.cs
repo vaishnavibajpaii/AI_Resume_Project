@@ -41,41 +41,52 @@ namespace ResumeFilterProject.Controllers
             return View(cleanedModel);
         }
 
-        // This action saves the confirmed, cleaned data
+        // In DataCleaningController.cs
+
         [HttpPost]
         public IActionResult SaveChanges(List<ResumeLabel> model)
         {
             foreach (var cleanedItem in model)
             {
-                if (cleanedItem.Id == 0)
+                // First, check if a label with this ID already exists in the database.
+                var existingLabel = _context.ResumeLabels.FirstOrDefault(r => r.Id == cleanedItem.Id);
+
+                if (existingLabel == null)
                 {
-                    // New record → let DB generate Id
-                    _context.ResumeLabels.Add(cleanedItem);
+                    // IT DOESN'T EXIST: This is a new record, so we ADD it.
+                    // We must create a new object because 'cleanedItem' is not tracked by the context.
+                    var newLabel = new ResumeLabel
+                    {
+                        // NOTE: If your database is set to auto-generate the ID, you should NOT set it here.
+                        // If the ID from the main Resume table should be the same, then you MUST set it.
+                        // Based on your previous code, you want to preserve the ID.
+                        Id = cleanedItem.Id,
+                        FileName = cleanedItem.FileName,
+                        Name = cleanedItem.Name,
+                        Contact = cleanedItem.Contact,
+                        Skills = cleanedItem.Skills,
+                        Experience = cleanedItem.Experience,
+                        Education = cleanedItem.Education,
+                        Projects = cleanedItem.Projects
+                    };
+                    _context.ResumeLabels.Add(newLabel);
                 }
                 else
                 {
-                    // Existing record → update
-                    var resumeInDb = _context.ResumeLabels.FirstOrDefault(r => r.Id == cleanedItem.Id);
-
-                    if (resumeInDb != null)
-                    {
-                        resumeInDb.Name = cleanedItem.Name;
-                        resumeInDb.Contact = cleanedItem.Contact;
-                        resumeInDb.Skills = cleanedItem.Skills;
-                        resumeInDb.Experience = cleanedItem.Experience;
-                        resumeInDb.Education = cleanedItem.Education;
-                        resumeInDb.Projects = cleanedItem.Projects;
-
-                        _context.ResumeLabels.Update(resumeInDb);
-                    }
+                    // IT EXISTS: This is an update, so we modify the existing record.
+                    existingLabel.Name = cleanedItem.Name;
+                    existingLabel.Contact = cleanedItem.Contact;
+                    existingLabel.Skills = cleanedItem.Skills;
+                    existingLabel.Experience = cleanedItem.Experience;
+                    existingLabel.Education = cleanedItem.Education;
+                    existingLabel.Projects = cleanedItem.Projects;
+                    _context.ResumeLabels.Update(existingLabel);
                 }
             }
 
-            _context.SaveChanges();
+            _context.SaveChanges(); // Save all additions and updates to the database at once.
 
-            // Add a success message to show the user
             TempData["SuccessMessage"] = "Cleaned labels have been saved successfully!";
-
             return RedirectToAction("Index", "Label");
         }
     }
